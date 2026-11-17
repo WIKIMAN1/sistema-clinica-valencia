@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es-419">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clínica Valencia — Hospital Clínica Valencia, Guayaquil</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--tq:#008f89;--tq2:#00b3a6;--navy:#0b2a4a;--navy2:#123a5e;--white:#fff;--bg:#eaf6f5;--gold:#f2b705;--red:#c0392b;--green:#1e8e3e}
+*{box-sizing:border-box}body{margin:0;font-family:'Segoe UI',system-ui,Arial,sans-serif;background:#0b2a4a url('assets/media-generation-fondo-hospital-sims-0-24a7e2d5-f5e1-4245-a7b7-4b90b058f14a.jpg') center top/cover fixed;color:#17324a}
+main{max-width:1100px;margin:0 auto;padding:18px}
+.journey-card{background:linear-gradient(rgba(255,255,255,.88),rgba(255,255,255,.82)),url('assets/media-generation-fondo-hospital-sims-0-24a7e2d5-f5e1-4245-a7b7-4b90b058f14a.jpg') center/cover;border-radius:22px;padding:22px;box-shadow:0 14px 34px rgba(0,0,0,.35)}
+header{background:linear-gradient(135deg,#0b2a4a,#008f89);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+header img{height:56px;width:56px;object-fit:contain;background:#fff;border-radius:12px;padding:4px}
+header h1{margin:0;font-size:22px;letter-spacing:1px}header small{display:block;font-size:12px;opacity:.9}
+header .sp{flex:1}button{cursor:pointer;border:0;border-radius:10px;padding:10px 16px;font-weight:700}
+.btn{background:var(--tq);color:#fff}.btn-navy{background:var(--navy);color:#fff}.btn-gold{background:var(--gold);color:#17324a}.btn-ghost{background:#fff;color:var(--navy);border:2px solid var(--navy)}
+.btn-danger{background:var(--red);color:#fff}.btn:disabled{opacity:.5}
+main{max-width:1100px;margin:0 auto;padding:18px}
+.card{background:#fff;border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 8px 20px rgba(11,42,74,.12);border-top:5px solid var(--tq)}
+.card h2{margin-top:0;color:var(--navy)}input,select,textarea{width:100%;padding:11px;border:2px solid #cfe3e1;border-radius:10px;margin:6px 0;font-size:15px;font-family:inherit}
+label{font-weight:700;font-size:13px;color:var(--navy)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.spec{background:linear-gradient(180deg,#fff,#e6f7f5);border:2px solid #bfe8e4;border-radius:16px;padding:16px;box-shadow:0 5px 0 #cfe8e5}
+.spec h3{margin:0 0 6px;color:var(--navy);font-size:16px}.spec p{font-size:13px;color:#4a6a7a;margin:0 0 10px;min-height:36px}
+/* Sims 3D scene */
+.scene{background:url('assets/media-generation-fondo-hospital-sims-0-24a7e2d5-f5e1-4245-a7b7-4b90b058f14a.jpg') center/cover;border-radius:22px;padding:0;position:relative;overflow:hidden;border:3px solid #fff;box-shadow:0 14px 30px rgba(0,0,0,.35);min-height:340px;display:flex;align-items:flex-end}
+.scene .scene-overlay{background:linear-gradient(180deg,rgba(11,42,74,0),rgba(11,42,74,.82));color:#fff;width:100%;padding:90px 22px 18px;text-align:center}
+.scene .scene-overlay b{font-size:24px;letter-spacing:1px}
+.scene .people-img{width:100%;display:block;border-radius:18px;box-shadow:0 10px 24px rgba(11,42,74,.25);margin-top:14px}
+.path{position:relative;max-width:640px;margin:10px auto;padding:24px 0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='900' viewBox='0 0 640 900'%3E%3Cpath d='M320 10 C 120 90, 120 170, 320 240 C 520 310, 520 390, 320 460 C 120 530, 120 610, 320 680 C 520 750, 520 820, 320 890' fill='none' stroke='%23f2b705' stroke-width='14' stroke-dasharray='26 18' stroke-linecap='round'/%3E%3Cpath d='M320 10 C 120 90, 120 170, 320 240 C 520 310, 520 390, 320 460 C 120 530, 120 610, 320 680 C 520 750, 520 820, 320 890' fill='none' stroke='%23008f89' stroke-width='26' opacity='.18'/%3E%3C/svg%3E") center top/100% 100% no-repeat}
+.step{position:relative;width:46%;background:#fff;border-radius:16px;padding:14px; margin:18px 0;box-shadow:0 10px 22px rgba(11,42,74,.28);border:2px solid #d7ecea}
+.step:nth-child(odd){margin-left:0}
+.step:nth-child(even){margin-left:54%}
+.step .door{font-size:26px;display:block}
+.step .dot{display:none}
+.step.here{border:3px solid var(--gold);background:#fffbe6}.step.here:after{content:"📍 Estás aquí";display:inline-block;background:var(--gold);border-radius:8px;padding:3px 8px;font-weight:800;font-size:12px;margin-top:6px}
+.step .tag{font-size:12px;color:var(--tq);font-weight:800;text-transform:uppercase}
+.hidden{display:none!important}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:800}
+.b-demo{background:#fff3cd;color:#7a5b00;border:2px dashed #d9a400}.b-ok{background:#d4edda;color:#155724}.b-warn{background:#f8d7da;color:#721c24}.b-info{background:#d1ecf1;color:#0c5460}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.stat{background:linear-gradient(135deg,var(--navy),var(--tq));color:#fff;border-radius:16px;padding:16px;text-align:center}
+.stat b{font-size:28px;display:block}
+.layout{display:flex;gap:16px}.side{width:230px;flex-shrink:0;background:var(--navy);color:#fff;border-radius:16px;padding:14px;height:fit-content;position:sticky;top:90px}
+.side button{display:block;width:100%;text-align:left;background:transparent;color:#fff;margin:4px 0;padding:10px;border-radius:8px}.side button:hover,.side button.on{background:var(--tq)}
+.content{flex:1;min-width:0}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid #e2e8ea;padding:8px;text-align:left}
+.alert{background:#fff3cd;border:2px solid #d9a400;border-radius:12px;padding:12px;margin:10px 0}
+.danger-box{background:#fdecea;border:2px solid var(--red);border-radius:12px;padding:12px;margin:10px 0}
+.ai-note{background:#e8f4fd;border:2px solid #0b5cad;border-radius:12px;padding:12px;margin:10px 0;font-weight:700}
+.tabs button{background:#eaf6f5;color:var(--navy);margin-right:6px}.tabs button.on{background:var(--navy);color:#fff}
+.bar-row{display:flex;align-items:center;gap:8px;margin:6px 0}.bar-row span{width:90px;font-size:12px}.bar{height:20px;background:var(--tq);border-radius:6px;color:#fff;font-size:12px;padding:2px 6px;min-width:30px}
+#printArea{display:none}
+@media print{body *{visibility:hidden}#printArea,#printArea *{visibility:visible}#printArea{display:block;position:absolute;top:0;left:0;width:100%;padding:20px;background:#fff;color:#000}}
+.print-foot{border-top:2px solid var(--tq);margin-top:24px;padding-top:10px;font-size:12px;text-align:center}
+.people{display:block;margin-top:14px}
+.person{width:74px;text-align:center;font-size:12px}.person .fig{width:64px;height:64px;border-radius:50%;margin:0 auto;background:linear-gradient(135deg,#ffe0b2,#ffb74d);border:3px solid #fff;box-shadow:0 4px 8px rgba(0,0,0,.2);display:flex;align-items:center;justify-content:center;font-size:34px}
+footer{background:var(--navy);color:#fff;text-align:center;padding:22px;margin-top:30px;font-size:14px;line-height:1.7}
+footer a{color:#7fe3dc}
+</style>
+</head>
+<body>
+<header>
+  <img src="assets/logo-oficial.jpg" alt="Logo oficial Clínica Valencia" onerror="this.style.display='none'">
+  <div><h1>CLÍNICA VALENCIA</h1><small>Hospital Clínica Valencia · Guayaquil, Ecuador · Expertos oncológicos · Previa cita</small></div>
+  <div class="sp"></div>
+  <span id="hdrUser"></span>
+  <button class="btn-ghost hidden" id="btnLogout" onclick="logout()">Cerrar sesión</button>
+  <button class="btn-ghost" onclick="showView('setup')">Configurar Supabase</button>
+  <button class="btn-gold" onclick="showView('landing')">Inicio</button>
+</header>
+<main>
+<!-- ============ SETUP ============ -->
+<section id="view-setup" class="card hidden">
+  <h2>⚙️ Configura Supabase</h2>
+  <p>Esta aplicación guarda los datos en <b>tu propio proyecto de Supabase</b>. Sin configuración solo puedes ver el caso EJEMPLO. Sigue los pasos del <b>README.md</b>: crea el proyecto, pega el SQL de <code>supabase-schema.sql</code> una sola vez y luego pega aquí la URL y la clave <b>anon / public</b>.</p>
+  <div class="danger-box"><b>⛔ NUNCA pegues la clave service_role.</b> La aplicación la rechaza automáticamente. Solo la clave anon (public) va en el navegador.</div>
+  <label>Supabase Project URL</label><input id="cfgUrl" placeholder="https://xxxxxxxx.supabase.co">
+  <label>Clave anon / public (publishable)</label><input id="cfgKey" placeholder="eyJhbGciOi... (clave anon)">
+  <button class="btn" onclick="saveConfig()">Guardar y conectar</button>
+  <button class="btn-ghost" onclick="showView('landing')">Volver sin configurar (solo EJEMPLO)</button>
+  <p id="cfgMsg"></p>
+  <p><a href="#" onclick="loadDemo();return false;">Ver caso EJEMPLO (sin guardar nada)</a> · El SQL está en <code>supabase-schema.sql</code>.</p>
+</section>
+
+<!-- ============ LANDING ============ -->
+<section id="view-landing">
+  <div class="scene">
+    <div class="scene-overlay"><b>HOSPITAL CLÍNICA VALENCIA</b><br><span style="font-size:13px">Gabriel García Moreno y Aurora Estrada · Guayaquil · Previa cita</span></div>
+  </div>
+  <img class="people-img" src="assets/media-generation-personas-felices-sims-0-d8dc86e1-58dd-45bc-8518-bd2739a401fa.jpg" alt="Doctor, enfermera, paciente y mamá con bebé sonriendo, ilustración 3D estilo Sims — Clínica Valencia">
+  <p style="text-align:center;font-weight:700;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.6)">Dr. Jorge Valencia · Enfermería · Pacientes contentos · Familias acompañadas</p>
+
+  <div class="card journey-card"><h2>Tu camino dentro de la clínica</h2>
+    <p>Desde que entras hasta que te vas bien. Si ya eres paciente e inicias sesión, verás el marcador <b>“Estás aquí”</b> avanzando según tu historia real.</p>
+    <div class="path" id="journeyPath"></div>
+    <p style="text-align:center;font-size:22px;font-weight:900;color:var(--green)">🎉 ¡Alta! Ya estoy bien</p>
+  </div>
+
+  <div class="card"><h2>Especialidades y servicios — 38 áreas</h2>
+    <p>Elige un área y agenda tu cita. Atención previa cita. WhatsApp: <b>0980795876 / 0999897742</b> · Tel. <b>04-502-4739</b> · <b>clinikvalencia@gmail.com</b></p>
+    <div class="grid" id="specGrid"></div>
+  </div>
+
+  <div class="card" id="loginCard"><h2>Iniciar sesión</h2>
+    <p>Una sola entrada para todos. La aplicación detecta tu rol y te lleva a tu panel. <b>Pacientes:</b> usa tu número de WhatsApp. <b>Personal:</b> usa tu nombre de usuario.</p>
+    <label>Identificador (WhatsApp del paciente o usuario del personal)</label>
+    <input id="loginId" placeholder="Ej.: 0980795876 o dr.valencia" autocomplete="username">
+    <label>Contraseña</label>
+    <input id="loginPass" type="password" placeholder="Tu contraseña" autocomplete="current-password">
+    <button class="btn" onclick="doLogin()">Entrar</button>
+    <button class="btn-gold" onclick="loadDemo()">Ver caso EJEMPLO</button>
+    <p id="loginMsg"></p>
+    <p style="font-size:13px;color:#555">Las contraseñas nunca se guardan en el código ni se muestran en pantalla. Se gestionan con Supabase Auth.</p>
+  </div>
+
+  <div class="card"><h2>Crear cuenta de paciente</h2>
+    <p>Un solo paso. Tu cuenta se crea con tu WhatsApp y una contraseña que eliges tú.</p>
+    <label>Nombre completo</label><input id="regName" placeholder="Nombre y apellido">
+    <label>WhatsApp (solo dígitos)</label><input id="regWa" placeholder="Ej.: 0981234567">
+    <label>Fecha de nacimiento</label><input id="regDob" type="date">
+    <label>Crea tu contraseña</label><input id="regPass" type="password" placeholder="Mínimo 6 caracteres">
+    <button class="btn" onclick="doRegister()">Crear mi cuenta</button>
+    <p id="regMsg"></p>
+  </div>
+</section>
+
+<!-- ============ DEMO ============ -->
+<section id="view-demo" class="card hidden">
+  <h2>Caso EJEMPLO <span class="badge b-demo">EJEMPLO / DEMO — no se guarda en Supabase</span></h2>
+  <p>Paciente ficticia de demostración. Ningún dato de este caso se guarda ni se envía.</p>
+  <div id="demoBody"></div>
+  <button class="btn-ghost" onclick="showView('landing')">Volver al inicio</button>
+</section>
+
+<!-- ============ PATIENT ============ -->
+<section id="view-patient" class="hidden">
+  <div class="card"><h2>Mi panel — Paciente <span class="badge b-info" id="patName"></span></h2>
+  <p>WhatsApp de la clínica: <a href="https://wa.me/593999897742" target="_blank" rel="noopener">0999897742</a> · <a href="https://wa.me/593980795876" target="_blank" rel="noopener">0980795876</a></p>
+  <div class="tabs"><button class="on" onclick="patTab('citas',this)">Mis citas</button><button onclick="patTab('agendar',this)">Agendar cita</button><button onclick="patTab('examenes',this)">Mis exámenes</button><button onclick="patTab('historia',this)">Mi historia</button><button onclick="patTab('clave',this)">Cambiar contraseña</button></div>
+  <div id="pat-citas"></div>
+  <div id="pat-agendar" class="hidden"></div>
+  <div id="pat-examenes" class="hidden"></div>
+  <div id="pat-historia" class="hidden"></div>
+  <div id="pat-clave" class="hidden">
+    <label>Nueva contraseña</label><input id="newPass" type="password"><button class="btn" onclick="changePass()">Cambiar contraseña</button><p id="passMsg"></p>
+  </div></div>
+</section>
+
+<!-- ============ DOCTOR ============ -->
+<section id="view-doctor" class="hidden"><div class="layout">
+  <aside class="side" id="docSide"></aside>
+  <div class="content"><div class="card"><h2 id="docTitle">Panel — Dr. Jorge Valencia</h2><div id="docBody"></div></div></div>
+</div></section>
+
+<!-- ============ NURSE ============ -->
+<section id="view-nurse" class="hidden"><div class="layout">
+  <aside class="side" id="nurseSide"></aside>
+  <div class="content"><div class="card"><h2 id="nurseTitle">Panel — Enfermería</h2><div id="nurseBody"></div></div></div>
+</div></section>
+
+<div id="printArea"></div>
+</main>
+<footer>
+  <b>Hospital Clínica Valencia</b> · Gabriel García Moreno y Aurora Estrada, Guayaquil 090301<br>
+  WhatsApp 0980795876 / 0999897742 · Teléfono 04-502-4739 · clinikvalencia@gmail.com · Facebook @CLINIKVALENCIA<br>
+  Dr. Jorge Valencia · Expertos oncológicos · Previa cita
+</footer>
+<script>
+/* ================= DATA ================= */
+const SPECIALTIES=["Medicina General","Medicina Interna","Pediatría","Ginecología","Obstetricia","Cardiología","Dermatología","Endocrinología","Gastroenterología","Neumología","Neurología","Traumatología","Reumatología","Urología","Nefrología","Psiquiatría","Psicología","Oftalmología","Otorrinolaringología","Odontología","Medicina Estética","Cirugía General","Cirugía Plástica","Cirugía Vascular","Oncología","Infectología","Alergología","Hematología","Fisiatría y Rehabilitación","Medicina del Deporte","Medicina Familiar","Geriatría","Medicina Laboral","Urgencias y Cuidados Críticos","Emergencia","Partos","Biopsia / Laboratorio","Rayos X"];
+const JOURNEY=[["Entrada · Consulta","Te recibimos y registramos tu motivo."],["Sala","Espera cómoda con acompañante."],["Emergencia","Atención inmediata cuando lo necesitas."],["Cirugía","Quirófano y equipo especializado."],["Partos","Acompañamiento para mamá y bebé."],["Biopsia / Laboratorio","Estudios y resultados verificados por tu médico."],["Oncología","Atención experta oncológica."],["Recuperación","Controles y seguimiento hasta tu alta."]];
+const AI_NOTE="Este es solo un análisis preliminar generado por IA, NO es un diagnóstico. Falta verificar por su médico. Consulte siempre con el Dr. Jorge Valencia antes de tomar cualquier decisión.";
+const MOTIVOS=["primera consulta","control","síntomas nuevos","resultado-examen","procedimiento","urgencia"];
+let sb=null, currentUser=null, currentProfile=null, demoMode=false;
+const $=id=>document.getElementById(id);
+function digits(s){return (s||"").replace(/\D/g,"")}
+function normUser(s){s=(s||"").trim().toLowerCase();if(s==="dr. valencia"||s==="dr valencia")return "dr.valencia";return s.replace(/\s+/g,".")}
+function isServiceRoleKey(k){try{const p=JSON.parse(atob(k.split(".")[1].replace(/-/g,"+").replace(/_/g,"/")));return p.role==="service_role"}catch(e){return false}}
+function initSupabase(){const u=localStorage.getItem("cv_supabase_url"),k=localStorage.getItem("cv_supabase_anon");if(!u||!k)return false;if(isServiceRoleKey(k)){alert("Clave service_role rechazada. Usa solo la clave anon.");return false}sb=window.supabase.createClient(u,k);return true}
+function showView(v){["landing","setup","demo","patient","doctor","nurse"].forEach(x=>$("view-"+x).classList.toggle("hidden",x!==v));window.scrollTo(0,0)}
+function esc(s){return String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function fechaEnLetras(f){try{return new Date(f+"T12:00:00").toLocaleDateString("es-EC",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}catch(e){return f}}
+function printFooter(){return `<div class="print-foot">Hospital Clínica Valencia · Gabriel García Moreno y Aurora Estrada, Guayaquil · WhatsApp 0980795876 / 0999897742 · Teléfono 04-502-4739 · clinikvalencia@gmail.com · Facebook @CLINIKVALENCIA</div>`}
+function printDoc(html){$("printArea").innerHTML=html;window.print()}
+
+/* ================= LANDING ================= */
+function renderJourney(hereIdx){$("journeyPath").innerHTML=JOURNEY.map((j,i)=>`<div class="step ${i===hereIdx?"here":""}"><span class="door">🚪</span><span class="tag">${esc(j[0])}</span><br>${esc(j[1])}</div>`).join("")}
+function renderSpecs(){$("specGrid").innerHTML=SPECIALTIES.map(s=>`<div class="spec"><h3>${esc(s)}</h3><p>Atención previa cita con el equipo de Clínica Valencia.</p><button class="btn" onclick="bookFromLanding('${esc(s)}')">Agendar cita</button></div>`).join("")}
+function bookFromLanding(spec){if(!currentUser){document.querySelector("#loginCard").scrollIntoView({behavior:"smooth"});$("loginMsg").textContent="Inicia sesión o crea tu cuenta para agendar en "+spec+".";return}showView("patient");patTab("agendar");window._preSpec=spec;renderBookStep()}
+
+/* ================= SETUP ================= */
+function saveConfig(){const u=$("cfgUrl").value.trim(),k=$("cfgKey").value.trim();if(!u||!k){$("cfgMsg").textContent="Pega la URL y la clave anon.";return}if(isServiceRoleKey(k)){$("cfgMsg").textContent="⛔ Esa es la clave service_role. No se guardó. Usa solo la clave anon / public.";return}localStorage.setItem("cv_supabase_url",u);localStorage.setItem("cv_supabase_anon",k);if(initSupabase()){$("cfgMsg").textContent="✅ Conectado. Ya puedes iniciar sesión.";showView("landing")}else $("cfgMsg").textContent="No se pudo conectar. Revisa la URL y la clave."}
+
+/* ================= AUTH ================= */
+async function needSb(){if(!sb){showView("setup");return false}return true}
+async function doRegister(){if(!await needSb())return;const name=$("regName").value.trim(),wa=digits($("regWa").value),dob=$("regDob").value,pass=$("regPass").value;if(!name||wa.length<9||!dob||pass.length<6){$("regMsg").textContent="Completa nombre, WhatsApp (9+ dígitos), fecha de nacimiento y contraseña de 6+ caracteres.";return}
+const email="wa"+wa+"@pacientes.clinicavalencia.local";const {data,error}=await sb.auth.signUp({email,password:pass});if(error){$("regMsg").textContent="Error: "+error.message;return}
+await sb.from("profiles").insert({id:data.user.id,role:"paciente",full_name:name,whatsapp:wa,birth_date:dob});$("regMsg").textContent="✅ Cuenta creada. Ya puedes iniciar sesión con tu WhatsApp.";$("loginId").value=wa}
+async function doLogin(){if(!await needSb())return;const raw=$("loginId").value.trim(),pass=$("loginPass").value;if(!raw||!pass){$("loginMsg").textContent="Escribe tu identificador y contraseña.";return}
+let email;if(/^\d{7,}$/.test(digits(raw))&&digits(raw).length>=9){email="wa"+digits(raw)+"@pacientes.clinicavalencia.local"}else{email=normUser(raw)+"@staff.clinicavalencia.local"}
+const {data,error}=await sb.auth.signInWithPassword({email,password:pass});if(error){$("loginMsg").textContent="No se pudo entrar: "+error.message+" (revisa identificador y contraseña)";return}
+await afterAuth(data.user)}
+async function afterAuth(user){currentUser=user;const {data}=await sb.from("profiles").select("*").eq("id",user.id).single();currentProfile=data||{role:"paciente",full_name:user.email};
+if(currentProfile.must_change_password){alert("Es tu primer ingreso: debes cambiar tu contraseña.");}
+$("btnLogout").classList.remove("hidden");$("hdrUser").textContent=currentProfile.full_name||"";
+if(currentProfile.role==="doctor"){renderDoctor("panel")}else if(currentProfile.role==="enfermera"){renderNurse("hoy")}else{renderPatient()}}
+async function logout(){if(sb)await sb.auth.signOut();currentUser=null;currentProfile=null;$("btnLogout").classList.add("hidden");$("hdrUser").textContent="";showView("landing")}
+async function changePass(){const p=$("newPass").value;if(p.length<6){$("passMsg").textContent="Mínimo 6 caracteres.";return}const {error}=await sb.auth.updateUser({password:p});if(error){$("passMsg").textContent=error.message;return}await sb.from("profiles").update({must_change_password:false}).eq("id",currentUser.id);$("passMsg").textContent="✅ Contraseña actualizada."}
+
+/* ================= PATIENT ================= */
+function renderPatient(){showView("patient");$("patName").textContent=currentProfile.full_name||"";renderJourney(0);patTab("citas")}
+function patTab(tab,btn){if(btn){document.querySelectorAll("#view-patient .tabs button").forEach(b=>b.classList.remove("on"));btn.classList.add("on")}["citas","agendar","examenes","historia","clave"].forEach(t=>$("pat-"+t).classList.toggle("hidden",t!==tab));if(tab==="citas")loadMyAppointments();if(tab==="agendar")renderBookStep();if(tab==="examenes")loadMyExams();if(tab==="historia")loadMyHistory()}
+async function loadMyAppointments(){const {data,error}=await sb.from("appointments").select("*").eq("patient_id",currentUser.id).order("date");$("pat-citas").innerHTML=error?"<p>No se pudieron cargar las citas: "+esc(error.message)+"</p>":(!data||!data.length?"<p>Aún no tienes citas. Agenda tu primera cita arriba.</p>":data.map(a=>`<div class="card"><b>${esc(a.specialty)}</b> · ${esc(a.date)} ${esc(a.time||"")} · ${esc(a.motivo||"")}<br>Estado: <span class="badge b-info">${esc(a.status||"programada")}</span> <a class="btn btn-ghost" style="padding:6px 10px" target="_blank" rel="noopener" href="https://wa.me/593999897742?text=${encodeURIComponent("Hola Clínica Valencia, soy "+(currentProfile.full_name||"")+" y quiero confirmar mi cita de "+a.specialty+" el "+a.date+" a las "+(a.time||""))}">WhatsApp</a></div>`).join(""))}
+let book={step:1,spec:"",motivo:"",motivoTxt:"",date:"",time:""};
+function renderBookStep(){const el=$("pat-agendar");const taken=window._taken||[];
+if(book.step===1)el.innerHTML=`<h3>Paso 1 de 4 — Área / especialidad</h3><select id="bkSpec">${SPECIALTIES.map(s=>`<option ${s===(window._preSpec||book.spec)?"selected":""}>${s}</option>`).join("")}</select><button class="btn" onclick="book.spec=$('bkSpec').value;book.step=2;renderBookStep()">Siguiente</button>`;
+else if(book.step===2)el.innerHTML=`<h3>Paso 2 de 4 — Motivo</h3><select id="bkMot">${MOTIVOS.map(m=>`<option>${m}</option>`).join("")}</select><textarea id="bkMotTxt" placeholder="Describe tu motivo (texto libre)"></textarea><button class="btn" onclick="book.motivo=$('bkMot').value;book.motivoTxt=$('bkMotTxt').value;book.step=3;renderBookStep()">Siguiente</button>`;
+else if(book.step===3)el.innerHTML=`<h3>Paso 3 de 4 — Fecha</h3><input type="date" id="bkDate" min="${todayStr()}" value="${book.date||todayStr()}"><button class="btn" onclick="book.date=$('bkDate').value;book.step=4;loadSlots()">Ver horas disponibles</button>`;
+else el.innerHTML=`<h3>Paso 4 de 4 — Hora</h3><p>${esc(book.spec)} · ${esc(book.motivo)} · ${fechaEnLetras(book.date)}</p><div id="slots">Cargando horas…</div><button class="btn-ghost" onclick="book.step=3;renderBookStep()">Cambiar fecha</button>`}
+async function loadSlots(){const {data}=await sb.from("appointments").select("time").eq("date",book.date).eq("specialty",book.spec);const taken=(data||[]).map(r=>r.time);const hours=["08:00","09:00","10:00","11:00","12:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00"];const free=hours.filter(h=>!taken.includes(h));$("slots").innerHTML=free.length?free.map(h=>`<button class="btn" style="margin:4px" onclick="confirmBooking('${h}')">${h}</button>`).join(""):"<p>No hay horas libres ese día en esa área. Elige otra fecha.</p>"}
+async function confirmBooking(time){const {error}=await sb.from("appointments").insert({patient_id:currentUser.id,specialty:book.spec,motivo:book.motivo+": "+book.motivoTxt,date:book.date,time,status:"programada",created_by:currentUser.id});if(error){alert("No se pudo guardar: "+error.message);return}
+const msg=`Hola Clínica Valencia, soy ${currentProfile.full_name}. Confirmo mi cita de ${book.spec} (${book.motivo}) el ${fechaEnLetras(book.date)} a las ${time}.`;
+$("pat-agendar").innerHTML=`<h3>¡Cita guardada! ✅</h3><p>${esc(book.spec)} · ${fechaEnLetras(book.date)} · ${time}</p><a class="btn" target="_blank" rel="noopener" href="https://wa.me/593999897742?text=${encodeURIComponent(msg)}">Confirmar por WhatsApp (0999897742)</a><p>Si el navegador bloquea la ventana, usa el botón de arriba.</p>`;book={step:1,spec:"",motivo:"",motivoTxt:"",date:"",time:""};await sb.from("followups").insert({patient_id:currentUser.id,channel:"whatsapp",message:msg,created_by:currentUser.id})}
+async function loadMyExams(){const {data}=await sb.from("exams").select("*").eq("patient_id",currentUser.id).order("created_at",{ascending:false});
+$("pat-examenes").innerHTML=`<h3>Subir examen (v1: se registra el archivo, no se sube el binario — ver README)</h3><label>Tipo de examen</label><input id="exType" placeholder="Ej.: Hemograma, Ecografía"><label>Nombre del archivo</label><input id="exFile" placeholder="Ej.: hemograma-2026-11-16.pdf"><label>Notas / valores que quieres que revise el médico</label><textarea id="exNotes"></textarea><button class="btn" onclick="uploadExam()">Registrar examen</button><div id="exList">${(data||[]).map(e=>`<div class="card"><b>${esc(e.type)}</b> — ${esc(e.file_name||"")}<br>Estado IA: ${esc(e.ai_status||"pendiente")}<div class="ai-note">${AI_NOTE}</div>${e.ai_analysis?`<p>${esc(e.ai_analysis)}</p>`:""}${e.doctor_note?`<p><b>Nota del Dr.:</b> ${esc(e.doctor_note)}</p>`:""}</div>`).join("")||"<p>Sin exámenes registrados.</p>"}</div>`}
+async function uploadExam(){const t=$("exType").value.trim(),f=$("exFile").value.trim(),n=$("exNotes").value.trim();if(!t){alert("Escribe el tipo de examen.");return}
+const analysis=n?("Resumen preliminar de los datos que registraste: "+n+" — El médico debe revisar los valores originales antes de cualquier interpretación."):"Resumen preliminar pendiente de revisión por el médico.";
+const {error}=await sb.from("exams").insert({patient_id:currentUser.id,type:t,file_name:f,ai_analysis:analysis,ai_status:"preliminar"});if(error){alert(error.message);return}loadMyExams()}
+async function loadMyHistory(){const {data:c}=await sb.from("consultations").select("*").eq("patient_id",currentUser.id).order("created_at",{ascending:false});const {data:d}=await sb.from("discharge_summaries").select("*").eq("patient_id",currentUser.id).order("created_at",{ascending:false});
+$("pat-historia").innerHTML=`<h3>Mi historia</h3>${(c||[]).map(x=>`<p>• ${esc(x.created_at||"")} — ${esc(x.summary||x.reason||"Consulta")}</p>`).join("")||"<p>Sin consultas registradas aún.</p>"}<h3>Alta / resumen</h3>${(d||[]).map(x=>`<p>• ${esc(x.created_at||"")} — ${esc(x.summary||"")}</p><button class="btn" onclick="printDischarge(${JSON.stringify(esc(x.summary||"")).replace(/"/g,"&quot;")})">Descargar resumen de alta (PDF)</button>`).join("")||"<p>Sin resumen de alta aún.</p>"}`}
+function printDischarge(summary){printDoc(`<div style="text-align:center"><img src="assets/logo-oficial.jpg" style="height:70px"><h2>Hospital Clínica Valencia</h2><p>Resumen de alta — Ciudad: Guayaquil, Ecuador — ${fechaEnLetras(todayStr())}</p></div><p><b>Paciente:</b> ${esc(currentProfile.full_name||"")}</p><p>${esc(summary||"")}</p>${printFooter()}`)}
+</script>
+<script>
+/* ================= DEMO (in-memory only, never saved) ================= */
+function loadDemo(){demoMode=true;showView("demo");$("demoBody").innerHTML=`
+<p><span class="badge b-demo">EJEMPLO / DEMO</span> Paciente ficticia: <b>María Ejemplo</b> · Cesárea programada · Este caso NO se guarda en Supabase.</p>
+<div class="card"><h3>Consulta</h3><p>Primera consulta de obstetricia, 38 semanas. Control normal, sin alergias conocidas.</p></div>
+<div class="card"><h3>Examen de laboratorio (análisis IA preliminar, APROBADO por el médico)</h3><p>Hemoglobina 11,8 g/dL; glucosa 92 mg/dL; resto dentro de rango.</p><div class="ai-note">${AI_NOTE}</div><p><b>Estado:</b> aprobado por Dr. Jorge Valencia · Nota: valores dentro de rango, continuar control.</p></div>
+<div class="card"><h3>Cirugía: cesárea</h3><p>Plan perioperatorio: insumos por fase (pre / intra / post), checklist OMS en 3 fases, dieta por fases como propuesta PRELIMINAR pendiente de aprobación del médico, exámenes preoperatorios completos, medicamentos a suspender indicados por el médico, hitos de recuperación cumplidos.</p></div>
+<div class="card"><h3>Controles y alta</h3><p>Control 24 h y 7 días sin complicaciones. <b>Alta:</b> mamá y bebé estables. Resumen de alta disponible en el panel del paciente.</p></div>`}
+
+/* ================= DOCTOR ================= */
+const DOC_MODULES=[["panel","Panel"],["pacientes","Registro de pacientes"],["historia","Historia clínica y seguimiento"],["recetas","Recetas"],["certificado","Certificado médico"],["agenda","Agendamiento"],["perfil","Perfil paciente"],["facturacion","Facturación e ingresos"],["video","Videollamadas"],["ia","Asistente IA"],["hospital","Hospital y áreas"],["servicios","Servicios"],["admin","Control administrativo"],["reportes","Reportes"],["accesos","Accesos"]];
+function renderDoctor(mod){showView("doctor");$("docSide").innerHTML="<h3 style='margin:6px'>Dr. Jorge Valencia</h3>"+DOC_MODULES.map(m=>`<button class="${m[0]===mod?"on":""}" onclick="renderDoctor('${m[0]}')">${m[1]}</button>`).join("")+"<button onclick=\"logout()\">Cerrar sesión</button>";$("docTitle").textContent="Panel — Dr. Jorge Valencia · "+(DOC_MODULES.find(m=>m[0]===mod)||["","Panel"])[1];docModule(mod)}
+async function docModule(mod){const B=$("docBody");
+if(mod==="panel"){const t=todayStr();const {data:a}=await sb.from("appointments").select("*").eq("date",t);const {data:p}=await sb.from("profiles").select("id").eq("role","paciente");const {data:i}=await sb.from("incomes").select("amount").eq("date",t);const ing=(i||[]).reduce((s,r)=>s+(+r.amount||0),0);
+B.innerHTML=`<div class="statgrid"><div class="stat"><b>${(a||[]).length}</b>Citas hoy</div><div class="stat"><b>${(p||[]).length}</b>Pacientes</div><div class="stat"><b>${(a||[]).length}</b>Consultas</div><div class="stat"><b>$${ing.toFixed(2)}</b>Ingresos hoy</div></div><p>Busca un paciente para abrir su historia completa.</p><input id="q" placeholder="Buscar paciente... por nombre, WhatsApp o cédula" oninput="docSearch(this.value)"><div id="searchRes"></div>`}
+else if(mod==="pacientes"){B.innerHTML=`<h3>Registrar paciente</h3><label>Nombre completo</label><input id="npName"><label>WhatsApp</label><input id="npWa"><label>Fecha de nacimiento</label><input id="npDob" type="date"><label>Cédula (opcional)</label><input id="npCed"><button class="btn" onclick="docRegisterPatient()">Guardar paciente</button><p id="npMsg"></p><p>El paciente crea su propia contraseña desde “Crear cuenta de paciente” con su WhatsApp.</p>`}
+else if(mod==="historia"){B.innerHTML=`<input id="q" placeholder="Buscar paciente... por nombre, WhatsApp o cédula" oninput="docSearch(this.value)"><div id="searchRes"></div><div id="recWrap"></div>`}
+else if(mod==="recetas"){B.innerHTML=`<h3>Receta</h3><label>Paciente (WhatsApp o nombre)</label><input id="rxPat"><label>Medicamentos e indicaciones</label><textarea id="rxTxt" rows="5"></textarea><button class="btn" onclick="saveRx()">Guardar receta</button><p id="rxMsg"></p><p>La receta nunca sustituye la valoración en consulta. No se promete cura.</p>`}
+else if(mod==="certificado"){B.innerHTML=`<h3>Certificado médico</h3><label>Paciente</label><input id="cfPat"><label>Texto del certificado</label><textarea id="cfTxt" rows="5"></textarea><button class="btn" onclick="printCert()">Imprimir certificado (PDF)</button>`}
+else if(mod==="agenda"){const {data}=await sb.from("appointments").select("*").order("date").limit(50);B.innerHTML=`<h3>Agendamiento</h3>${(data||[]).map(a=>`<p>• ${esc(a.date)} ${esc(a.time||"")} — ${esc(a.specialty)} — ${esc(a.status||"")}</p>`).join("")||"<p>Sin citas.</p>"}`}
+else if(mod==="perfil"){B.innerHTML=`<input id="q" placeholder="Buscar paciente... por nombre, WhatsApp o cédula" oninput="docSearch(this.value)"><div id="searchRes"></div>`}
+else if(mod==="facturacion"){const {data:inc}=await sb.from("incomes").select("*").order("date",{ascending:false}).limit(60);const byM={};(inc||[]).forEach(r=>{const k=(r.date||"").slice(0,7);byM[k]=(byM[k]||0)+(+r.amount||0)});const max=Math.max(1,...Object.values(byM));
+B.innerHTML=`<h3>Facturación e ingresos — solo el doctor ve dinero</h3><label>Fecha</label><input id="inDate" type="date" value="${todayStr()}"><label>Concepto</label><input id="inConcept" placeholder="Ej.: Consulta Cardiología"><label>Monto (USD)</label><input id="inAmt" type="number" step="0.01"><button class="btn" onclick="saveIncome()">Registrar ingreso</button><p id="inMsg"></p><h4>Ingresos por mes</h4>${Object.entries(byM).map(([k,v])=>`<div class="bar-row"><span>${k}</span><div class="bar" style="width:${Math.round(v/max*70+8)}%">$${v.toFixed(0)}</div></div>`).join("")||"<p>Sin ingresos registrados.</p>"}<h4>Consultas por área</h4><p>Ver Reportes para el detalle por especialidad.</p><button class="btn-gold" onclick="exportCSV('incomes')">Exportar Excel (CSV) para el contador</button>`}
+else if(mod==="video"){const tok=Math.random().toString(36).slice(2,10);B.innerHTML=`<h3>Videollamadas (Jitsi)</h3><p>La sala usa un código aleatorio, <b>nunca el nombre del paciente</b> en la dirección.</p><label>Código de sala (aleatorio)</label><input id="jitTok" value="cv-${tok}"><button class="btn" onclick="openJitsi()">Abrir sala Jitsi</button><p id="jitLink"></p>`}
+else if(mod==="ia"){B.innerHTML=`<h3>Asistente IA — análisis preliminar de exámenes</h3><p>La IA resume lo que el paciente registró. <b>Nunca</b> da un diagnóstico definitivo, nunca receta y nunca promete cura.</p><div id="iaList">Cargando…</div>`;const {data}=await sb.from("exams").select("*").order("created_at",{ascending:false}).limit(20);$("iaList").innerHTML=(data||[]).map(e=>`<div class="card"><b>${esc(e.type)}</b> — ${esc(e.file_name||"")}<p>${esc(e.ai_analysis||"")}</p><div class="ai-note">${AI_NOTE}</div><label>Tu decisión</label><select id="st-${e.id}"><option value="aprobado">Aprobado</option><option value="corregido">Corregido</option><option value="rechazado">Rechazado</option></select><input id="nt-${e.id}" placeholder="Nota del médico"><button class="btn" onclick="reviewExam('${e.id}')">Guardar revisión</button></div>`).join("")||"<p>Sin exámenes pendientes.</p>"}
+else if(mod==="hospital"){B.innerHTML=`<h3>Hospital y áreas</h3>`+JOURNEY.map(j=>`<p>• <b>${esc(j[0])}</b> — ${esc(j[1])}</p>`).join("")+`<p>Final: <b>¡Alta! Ya estoy bien</b></p>`}
+else if(mod==="servicios"){const {data}=await sb.from("services").select("*").order("name");B.innerHTML=`<h3>Servicios (38)</h3>${(data||[]).map(s=>`<p>• ${esc(s.name)} — $${(+s.price||0).toFixed(2)}</p>`).join("")||SPECIALTIES.map(s=>`<p>• ${esc(s)}</p>`).join("")}`}
+else if(mod==="admin"){B.innerHTML=`<h3>Control administrativo</h3><p>Entregas de turno, visitas a habitaciones y tareas de enfermería.</p><div id="adminList">Cargando…</div>`;const {data}=await sb.from("shift_handovers").select("*").order("created_at",{ascending:false}).limit(10);$("adminList").innerHTML=(data||[]).map(h=>`<p>• ${esc(h.created_at||"")} — ${esc(h.summary||"")}</p>`).join("")||"<p>Sin entregas de turno registradas.</p>"}
+else if(mod==="reportes"){B.innerHTML=`<h3>Reportes</h3><button class="btn" onclick="exportCSV('appointments')">Exportar citas (CSV)</button> <button class="btn" onclick="exportCSV('incomes')">Exportar ingresos (CSV)</button> <button class="btn" onclick="exportCSV('exams')">Exportar exámenes (CSV)</button><p>Los reportes en PDF usan la vista de impresión con el membrete oficial.</p>`}
+else if(mod==="accesos"){B.innerHTML=`<h3>Accesos — crear cuenta de enfermera</h3><p>Escribe su nombre y su nombre de usuario. Ella pondrá su propia contraseña en el primer ingreso y deberá cambiarla.</p><label>Nombre completo</label><input id="acName"><label>Usuario (ej.: enfermera.maria)</label><input id="acUser"><label>Contraseña temporal (ella la cambia al entrar)</label><input id="acPass" type="password"><button class="btn" onclick="createNurse()">Crear cuenta de enfermera</button><p id="acMsg"></p>`}
+}
+async function docSearch(q){q=(q||"").trim();if(q.length<2){const el=$("searchRes");if(el)el.innerHTML="";return}const {data}=await sb.from("profiles").select("*").or(`full_name.ilike.%${q}%,whatsapp.ilike.%${q}%`).eq("role","paciente").limit(10);
+$("searchRes").innerHTML=(data||[]).map(p=>`<div class="card"><b>${esc(p.full_name)}</b> · WhatsApp ${esc(p.whatsapp||"")}<br><button class="btn" onclick="openRecord('${p.id}','${esc(p.full_name)}')">Abrir historia clínica</button></div>`).join("")||"<p>Sin resultados.</p>"}
+async function openRecord(pid,name){const {data:r}=await sb.from("medical_records").select("*").eq("patient_id",pid).single();const rec=r||{};const {data:c}=await sb.from("consultations").select("*").eq("patient_id",pid).order("created_at",{ascending:false});const {data:e}=await sb.from("exams").select("*").eq("patient_id",pid).order("created_at",{ascending:false});
+const w=$("recWrap")||$("searchRes");w.innerHTML=`<div class="card"><h3>Historia clínica — ${esc(name)}</h3>
+<div class="tabs"><button class="on">Resumen</button><button>Antecedentes</button><button>Consultas</button><button>Estudios</button><button>Archivos</button></div>
+<label>Tipo de sangre (destacado)</label><input id="mrBlood" value="${esc(rec.blood_type||"")}" placeholder="Ej.: O+">
+<label>Alergias ⚠️</label><textarea id="mrAlg">${esc(rec.allergies||"")}</textarea>
+<label>Enfermedades de base</label><textarea id="mrDis">${esc(rec.base_diseases||"")}</textarea>
+<label>Medicamentos</label><textarea id="mrMed">${esc(rec.medications||"")}</textarea>
+<label>Cirugías previas</label><textarea id="mrSurg">${esc(rec.surgeries||"")}</textarea>
+<label>Antecedentes familiares</label><textarea id="mrFam">${esc(rec.family_history||"")}</textarea>
+<label>Hábitos</label><textarea id="mrHab">${esc(rec.habits||"")}</textarea>
+<label>Vacunas</label><textarea id="mrVac">${esc(rec.vaccines||"")}</textarea>
+<label>Signos vitales</label><input id="mrVit" value="${esc(rec.vitals||"")}" placeholder="PA, FC, FR, Temp, SpO2">
+<label>Peso (kg)</label><input id="mrW" type="number" step="0.1" value="${rec.weight||""}"><label>Talla (m)</label><input id="mrH" type="number" step="0.01" value="${rec.height||""}">
+<label>Embarazos / partos</label><input id="mrPreg" value="${esc(rec.pregnancy||"")}">
+<button class="btn" onclick="saveRecord('${pid}')">Guardar historia clínica</button><p id="mrMsg"></p>
+<h4>Consultas</h4>${(c||[]).map(x=>`<p>• ${esc(x.created_at||"")} — ${esc(x.summary||"")}</p>`).join("")||"<p>Sin consultas.</p>"}
+<h4>Estudios / exámenes</h4>${(e||[]).map(x=>`<p>• ${esc(x.type)} — ${esc(x.ai_status||"")}</p>`).join("")||"<p>Sin estudios.</p>"}
+<h4>Plan perioperatorio / cirugía</h4><label>Tipo de cirugía</label><input id="sxType" placeholder="Ej.: Cesárea"><label>Insumos por fase</label><textarea id="sxSup" placeholder="Pre: ... Intra: ... Post: ..."></textarea><label>Checklist OMS (3 fases)</label><textarea id="sxOms" placeholder="Antes de la anestesia / Antes de la incisión / Antes de salir del quirófano"></textarea><label>Dieta por fases (propuesta PRELIMINAR, requiere aprobación del médico)</label><textarea id="sxDiet"></textarea><label>Exámenes preoperatorios</label><input id="sxPre"><label>Medicamentos a suspender</label><input id="sxMeds"><button class="btn" onclick="saveSurgery('${pid}')">Guardar plan perioperatorio</button><p id="sxMsg"></p>
+<h4>Alta y resumen</h4><textarea id="dcTxt" placeholder="Resumen de alta..."></textarea><button class="btn-gold" onclick="saveDischarge('${pid}')">Dar de alta y generar resumen (PDF)</button><p id="dcMsg"></p>
+<h4>WhatsApp al paciente</h4><button class="btn" onclick="waTemplate('${pid}','confirmación')">Confirmación</button> <button class="btn" onclick="waTemplate('${pid}','recordatorio')">Recordatorio</button> <button class="btn" onclick="waTemplate('${pid}','seguimiento 24h')">Seguimiento 24 h</button> <button class="btn" onclick="waTemplate('${pid}','seguimiento 7 días')">Seguimiento 7 días</button> <button class="btn" onclick="waTemplate('${pid}','resultado listo')">Resultado listo</button> <button class="btn" onclick="waTemplate('${pid}','control')">Control</button>
+</div>`}
+async function saveRecord(pid){const w=+$("mrW").value,h=+$("mrH").value;const bmi=w&&h?(w/(h*h)).toFixed(1):null;const row={patient_id:pid,blood_type:$("mrBlood").value,allergies:$("mrAlg").value,base_diseases:$("mrDis").value,medications:$("mrMed").value,surgeries:$("mrSurg").value,family_history:$("mrFam").value,habits:$("mrHab").value,vaccines:$("mrVac").value,vitals:$("mrVit").value,weight:w||null,height:h||null,bmi,pregnancy:$("mrPreg").value,updated_by:currentUser.id,updated_at:new Date().toISOString()};const {error}=await sb.from("medical_records").upsert(row,{onConflict:"patient_id"});$("mrMsg").textContent=error?error.message:"✅ Historia guardada. IMC: "+(bmi||"—")+" (registrado por "+(currentProfile.full_name||"")+", "+new Date().toLocaleString("es-EC")+")"}
+async function saveSurgery(pid){const {error}=await sb.from("surgeries").insert({patient_id:pid,type:$("sxType").value,created_by:currentUser.id});if(error){$("sxMsg").textContent=error.message;return}const {data:s}=await sb.from("surgeries").select("id").eq("patient_id",pid).order("created_at",{ascending:false}).limit(1).single();await sb.from("perioperative_plans").insert({surgery_id:s.id,supplies:$("sxSup").value,oms_checklist:$("sxOms").value,diet_proposal:$("sxDiet").value,preop_exams:$("sxPre").value,meds_to_suspend:$("sxMeds").value});$("sxMsg").textContent="✅ Plan perioperatorio guardado. La dieta es una propuesta PRELIMINAR: requiere aprobación del médico."}
+async function saveDischarge(pid){const s=$("dcTxt").value.trim();if(!s){$("dcMsg").textContent="Escribe el resumen de alta.";return}await sb.from("discharge_summaries").insert({patient_id:pid,summary:s,created_by:currentUser.id});$("dcMsg").textContent="✅ Alta registrada.";printDoc(`<div style="text-align:center"><img src="assets/logo-oficial.jpg" style="height:70px"><h2>Hospital Clínica Valencia</h2><p>Resumen de alta — Ciudad: Guayaquil, Ecuador — ${fechaEnLetras(todayStr())}</p></div><p>${esc(s)}</p>${printFooter()}`)}
+async function saveRx(){const {error}=await sb.from("prescriptions").insert({patient_id:null,details:$("rxTxt").value,patient_label:$("rxPat").value,created_by:currentUser.id});$("rxMsg").textContent=error?error.message:"✅ Receta guardada."}
+function printCert(){printDoc(`<div style="text-align:center"><img src="assets/logo-oficial.jpg" style="height:70px"><h2>Hospital Clínica Valencia</h2><p>Certificado médico — Ciudad: Guayaquil, Ecuador — ${fechaEnLetras(todayStr())}</p></div><p><b>Paciente:</b> ${esc($("cfPat").value)}</p><p>${esc($("cfTxt").value)}</p><p>Dr. Jorge Valencia</p>${printFooter()}`)}
+async function saveIncome(){const {error}=await sb.from("incomes").insert({date:$("inDate").value,concept:$("inConcept").value,amount:+$("inAmt").value,created_by:currentUser.id});$("inMsg").textContent=error?error.message:"✅ Ingreso registrado.";if(!error)renderDoctor("facturacion")}
+function openJitsi(){const t=$("jitTok").value.trim();$("jitLink").innerHTML=`Sala: <a target="_blank" rel="noopener" href="https://meet.jit.si/${encodeURIComponent(t)}">meet.jit.si/${esc(t)}</a>`}
+async function reviewExam(id){const st=$("st-"+id).value,nt=$("nt-"+id).value;const {error}=await sb.from("exams").update({ai_status:st,doctor_note:nt}).eq("id",id);if(error){alert(error.message);return}renderDoctor("ia")}
+async function createNurse(){const name=$("acName").value.trim(),user=normUser($("acUser").value),pass=$("acPass").value;if(!name||!user||pass.length<6){$("acMsg").textContent="Completa nombre, usuario y contraseña temporal de 6+ caracteres.";return}const email=user+"@staff.clinicavalencia.local";const {data,error}=await sb.auth.signUp({email,password:pass});if(error){$("acMsg").textContent=error.message;return}await sb.from("profiles").insert({id:data.user.id,role:"enfermera",full_name:name,username:user,must_change_password:true});$("acMsg").textContent="✅ Cuenta de enfermera creada. Ella debe cambiar su contraseña en el primer ingreso."}
+async function docRegisterPatient(){const name=$("npName").value.trim(),wa=digits($("npWa").value);if(!name||!wa){$("npMsg").textContent="Escribe nombre y WhatsApp.";return}$("npMsg").textContent="Paciente registrado para el registro: "+name+" ("+wa+"). Pídele que cree su cuenta con su WhatsApp y su propia contraseña."}
+async function waTemplate(pid,kind){const msgs={"confirmación":"Hola, le confirmamos su cita en Clínica Valencia. Quedamos atentos, Dr. Jorge Valencia.","recordatorio":"Hola, le recordamos su cita de mañana en Clínica Valencia. Por favor confirme su asistencia.","seguimiento 24h":"Hola, ¿cómo se siente 24 horas después de su atención en Clínica Valencia? Cuéntenos cualquier novedad.","seguimiento 7 días":"Hola, han pasado 7 días desde su atención. ¿Cómo sigue? Recuerde su control en Clínica Valencia.","resultado listo":"Hola, su resultado ya está listo en Clínica Valencia. Puede pasar a retirarlo o coordinamos su control.","control":"Hola, le recordamos su control en Clínica Valencia. Confirme el día y la hora que le conviene."};const {data:p}=await sb.from("profiles").select("whatsapp").eq("id",pid).single();const wa=p&&p.whatsapp?("593"+p.whatsapp.replace(/^0/,"")):"593999897742";await sb.from("followups").insert({patient_id:pid,channel:"whatsapp",message:msgs[kind]||kind,created_by:currentUser.id});window.open("https://wa.me/"+wa+"?text="+encodeURIComponent(msgs[kind]||kind),"_blank")}
+async function exportCSV(table){const {data,error}=await sb.from(table).select("*").limit(500);if(error){alert(error.message);return}if(!data||!data.length){alert("Sin datos para exportar.");return}const keys=Object.keys(data[0]);const csv=[keys.join(",")].concat(data.map(r=>keys.map(k=>`"${String(r[k]??"").replace(/"/g,'""')}"`).join(","))).join("\n");const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=table+"-clinica-valencia.csv";a.click()}
+
+/* ================= NURSE ================= */
+const NURSE_MODULES=[["hoy","Lo que te toca hacer hoy"],["visitas","Visitas a habitaciones"],["seguimiento","Control y seguimiento"],["entrega","Entrega de turno"],["registro","Registrar paciente"],["historia","Historia clínica"]];
+function renderNurse(mod){showView("nurse");$("nurseSide").innerHTML="<h3 style='margin:6px'>Enfermería</h3>"+NURSE_MODULES.map(m=>`<button class="${m[0]===mod?"on":""}" onclick="renderNurse('${m[0]}')">${m[1]}</button>`).join("")+"<button onclick=\"logout()\">Cerrar sesión</button>";$("nurseTitle").textContent="Panel — Enfermería · "+(NURSE_MODULES.find(m=>m[0]===mod)||["",""])[1];nurseModule(mod)}
+async function nurseModule(mod){const B=$("nurseBody");
+if(mod==="hoy"){const {data}=await sb.from("followup_tasks").select("*").eq("status","pendiente").order("created_at",{ascending:false});B.innerHTML=`<h3>Lo que te toca hacer hoy</h3><p>Tareas pendientes que dejó la enfermera saliente.</p>${(data||[]).map(t=>`<div class="card"><b>${esc(t.title||"Tarea")}</b><p>${esc(t.details||"")}</p><button class="btn" onclick="completeTask('${t.id}')">Marcar como hecha</button></div>`).join("")||"<p>No hay tareas pendientes. ¡Buen turno!</p>"}`}
+else if(mod==="visitas"){B.innerHTML=`<h3>Visita a habitación</h3><label>Paciente (nombre o WhatsApp)</label><input id="rvPat"><label>Acompañante</label><input id="rvComp" placeholder="Nombre del acompañante"><label>Número de personas</label><input id="rvNum" type="number" value="1"><label>Observaciones (texto libre)</label><textarea id="rvObs"></textarea><button class="btn" onclick="saveVisit()">Guardar visita</button><p id="rvMsg"></p>`}
+else if(mod==="seguimiento"){B.innerHTML=`<h3>Control y seguimiento</h3><label>Paciente</label><input id="fuPat"><label>¿Qué se hizo / cómo sigue?</label><textarea id="fuTxt"></textarea><button class="btn" onclick="saveFollowup()">Guardar control</button><p id="fuMsg"></p>`}
+else if(mod==="entrega"){const {data}=await sb.from("shift_handovers").select("*").order("created_at",{ascending:false}).limit(5);B.innerHTML=`<h3>Entrega de turno</h3><p>La saliente escribe qué hizo y qué deja pendiente por paciente. La entrante lo revisa y confirma recepción.</p><label>Qué hice</label><textarea id="hoDid"></textarea><label>Qué dejo pendiente (por paciente)</label><textarea id="hoPend"></textarea><button class="btn" onclick="saveHandover()">Guardar entrega</button><p id="hoMsg"></p><h4>Últimas entregas</h4>${(data||[]).map(h=>`<div class="card"><p>${esc(h.summary||"")}</p><p>Pendiente: ${esc(h.pending||"")}</p><button class="btn-ghost" onclick="confirmHandover('${h.id}')">Confirmo recepción</button></div>`).join("")||"<p>Sin entregas.</p>"}`}
+else if(mod==="registro"){B.innerHTML=`<h3>Registrar paciente</h3><label>Nombre completo</label><input id="nrName"><label>WhatsApp</label><input id="nrWa"><label>Fecha de nacimiento</label><input id="nrDob" type="date"><button class="btn" onclick="nurseRegister()">Guardar</button><p id="nrMsg"></p>`}
+else if(mod==="historia"){B.innerHTML=`<input id="q" placeholder="Buscar paciente... por nombre o WhatsApp" oninput="docSearch(this.value)"><div id="searchRes"></div><p>La enfermera puede registrar pacientes y llenar/editar la historia clínica; queda registrado quién y cuándo lo hizo.</p>`}
+}
+async function completeTask(id){await sb.from("followup_tasks").update({status:"hecha"}).eq("id",id);renderNurse("hoy")}
+async function saveVisit(){const {error}=await sb.from("room_visits").insert({patient_label:$("rvPat").value,companion:$("rvComp").value,people_count:+$("rvNum").value||1,notes:$("rvObs").value,created_by:currentUser.id});$("rvMsg").textContent=error?error.message:"✅ Visita guardada."}
+async function saveFollowup(){const {error}=await sb.from("followups").insert({patient_id:null,patient_label:$("fuPat").value,message:$("fuTxt").value,channel:"control",created_by:currentUser.id});$("fuMsg").textContent=error?error.message:"✅ Control guardado."}
+async function saveHandover(){const {error}=await sb.from("shift_handovers").insert({summary:$("hoDid").value,pending:$("hoPend").value,created_by:currentUser.id});$("hoMsg").textContent=error?error.message:"✅ Entrega guardada. La enfermera entrante debe confirmarla."}
+async function confirmHandover(id){await sb.from("shift_handovers").update({confirmed_by:currentUser.id}).eq("id",id);renderNurse("entrega")}
+async function nurseRegister(){$("nrMsg").textContent="Paciente registrado para el registro: "+$("nrName").value+" ("+$("nrWa").value+"). Pídele que cree su cuenta con su WhatsApp."}
+
+/* ================= INIT ================= */
+renderJourney(-1);renderSpecs();
+if(initSupabase()){sb.auth.getSession().then(async({data})=>{if(data.session)await afterAuth(data.session.user)})}
+</script>
+
+</body>
+</html>
